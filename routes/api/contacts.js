@@ -12,6 +12,6 @@ router.post("/", validateBody, ctrl.addContact);
 
 router.delete("/:id", ctrl.deleteContact);
 
-router.put("/:id", validateBody, ctrl.updateContact);
+router.put("/:id", ctrl.updateContact);
 
 module.exports = router;

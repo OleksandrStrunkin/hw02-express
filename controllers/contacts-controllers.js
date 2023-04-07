@@ -34,7 +34,7 @@ const deleteContact = async (req, res) => {
 }
 
 const updateContact = async (req, res) => {
-  const { error } = schema.validate(req.body);
+  const { error } = updateSchema.validate(req.body);
   if (error) {
     throw HttpError(400, `"message": "missing fields"`);
   }

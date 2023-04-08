@@ -40,25 +40,39 @@ const addContact = async ({name, email, phone}) => {
 };
 
 
-
 const updateContact = async (contactId, body) => {
   const contacts = await listContacts();
   const index = contacts.findIndex(item => item.id === contactId);
-  if (index === -1) {
+  if(index === -1){
     return null;
   }
-  const oldContact = contacts[index];
-  const newContact = body.hasOwnProperty("name")
-    ? { ...oldContact, name: body.name }
-    : body.hasOwnProperty("email")
-    ? { ...oldContact, email: body.email }
-    : body.hasOwnProperty("phone")
-    ? { ...oldContact, phone: body.phone }
-    : oldContact;
-  contacts[index] = newContact;
+
+  const { name, email, phone } = { ...contacts[index], ...body };
+  const updatedContact = { id: contactId, name, email, phone };
+  contacts[index] = updatedContact;
+
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return contacts[index];
-}
+  return updatedContact;
+};
+
+// const updateContact = async (contactId, body) => {
+//   const contacts = await listContacts();
+//   const index = contacts.findIndex(item => item.id === contactId);
+//   if (index === -1) {
+//     return null;
+//   }
+//   const oldContact = contacts[index];
+//   const newContact = body.hasOwnProperty("name")
+//     ? { ...oldContact, name: body.name }
+//     : body.hasOwnProperty("email")
+//     ? { ...oldContact, email: body.email }
+//     : body.hasOwnProperty("phone")
+//     ? { ...oldContact, phone: body.phone }
+//     : oldContact;
+//   contacts[index] = newContact;
+//   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+//   return contacts[index];
+// }
 
 module.exports = {
   listContacts,
@@ -71,14 +85,3 @@ module.exports = {
 
 
 
-
-// const updateContact = async (contactId, body) => {
-//   const contacts = await listContacts();
-//     const index = contacts.findIndex(item => item.id === contactId);
-//     if(index === -1){
-//         return null;
-//     }
-//     contacts[index] = {contactId, ...body};
-//     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-//     return contacts[index];
-// };

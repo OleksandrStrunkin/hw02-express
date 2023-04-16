@@ -1,6 +1,7 @@
 const  HttpError  = require("../helpers/HttpError");
-const {addSchema} = require('../schemas/contact-schema');
-const { updateSchema } = require("../schemas/update-schema");
+// const {addSchema} = require('../schemas/contact-schema');
+// const { updateSchema } = require("../schemas/update-schema");
+const {updateSchema, updateFavoriteSchema, addSchema} = require("../models/contactsM")
 
 const validateBody = (req, res, next) => {
   const requiredFields = ["name", "email", "phone"];
@@ -37,11 +38,31 @@ const validateUpdateBody = (req, res, next) => {
   next();
 };
 
+const validateUpdateFavoriteBody = (req, res, next) => {
+  if (!req.body) {
+    return next(HttpError(400, "missing fields favorite"));
+  }
+
+  const fields = Object.keys(req.body);
+  if (fields.length === 0) {
+    return next(HttpError(400, "missing fields favorite"));
+  }
+
+  const { error } = updateFavoriteSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, error.message));
+  }
+
+  next();
+};
+
+
 
 
 module.exports = {
   validateBody,
   validateUpdateBody,
+  validateUpdateFavoriteBody,
 };
 
 

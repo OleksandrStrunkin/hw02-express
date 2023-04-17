@@ -17,7 +17,7 @@ const contactSchema = new Schema({
       type: Boolean,
       default: false,
     },
-  });
+  }, {versionKey: false});
 
 const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),

@@ -1,9 +1,7 @@
-const contacts = require("../models/contacts");
 const HttpError  = require("../helpers/HttpError");
 const { ctrlWrapper } = require('../utils/ctrlWrapper')
-const {updateSchema} = require('../schemas/update-schema')
 
-const { Contact, updateFavoriteSchema } = require("../models/contactsM")
+const { Contact, updateFavoriteSchema, updateSchema } = require("../models/contactsM")
 
 
 const getAllContacts = async (req, res) => {

@@ -1,7 +1,8 @@
 const  HttpError  = require("../helpers/HttpError");
 const {updateSchema, updateFavoriteSchema, addSchema} = require("../models/contactsM")
+const {registerSchema, loginSchema} = require("../models/users")
 
-const validateBody = (req, res, next) => {
+const validateContactBody = (req, res, next) => {
   const requiredFields = ["name", "email", "phone"];
   const missingFields = requiredFields.filter((field) => !(field in req.body));
   if (missingFields.length > 0) {
@@ -54,50 +55,28 @@ const validateUpdateFavoriteBody = (req, res, next) => {
   next();
 };
 
-
-
-
-module.exports = {
-  validateBody,
-  validateUpdateBody,
-  validateUpdateFavoriteBody,
+const validateRegisterBody = (req, res, next) => {
+  const { error } = registerSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, error.message));
+  }
+  next();
+};
+const validateLoginBody = (req, res, next) => {
+  const { error } = loginSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, error.message));
+  }
+  next();
 };
 
 
 
-
-// const validateUpdateBody = (req, res, next) => {
-//   const { error } = updateSchema.validate(req.body);
-//   if (error) {
-//     return next(HttpError(400, error.message));
-//   }
-
-//   const fields = Object.keys(req.body);
-//   if (fields.length === 0) {
-//     return next(HttpError(400, "No fields provided to update"));
-//   }
-
-//   next();
-// };
-
-
-
-
-// const HttpError  = require("../helpers/HttpError");
-
-// const validateBody = schema =>{
-//     const func = async (req, res, next)=>{
-//         const { error } = schema.validate(req.body);
-//     if (error) {
-//       next(HttpError(400, error.message));
-//     }
-//     next();
-//     }
-//     return func
-// };
-
-// module.exports = {
-//     validateBody,
-// }
-
+module.exports = {
+  validateContactBody,
+  validateUpdateBody,
+  validateUpdateFavoriteBody,
+  validateRegisterBody,
+  validateLoginBody
+};
 

@@ -17,6 +17,10 @@ const contactSchema = new Schema({
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    },
   }, {versionKey: false});
 
 const updateFavoriteSchema = Joi.object({
@@ -33,6 +37,11 @@ const addSchema = Joi.object({
     "string.base": `"email" must be string`,
   }),
   phone: Joi.string().required().messages({
+    "any.required": `"phone" is required`,
+    "string.empty": `"phone" cannot be empty`,
+    "string.base": `"phone" must be string`,
+  }),
+  favorite: Joi.boolean().required().messages({
     "any.required": `"phone" is required`,
     "string.empty": `"phone" cannot be empty`,
     "string.base": `"phone" must be string`,

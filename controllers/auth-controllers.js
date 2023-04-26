@@ -6,7 +6,6 @@ require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const {SECRET_KEY} = process.env;
 
-
 const { User } = require("../models/users");
 
 const register = async (req, res) => {

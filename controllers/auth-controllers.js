@@ -17,8 +17,8 @@ const register = async (req, res) => {
   }
 
   res.status(201).json({
-    name: result.name,
     email: result.email,
+    subscription: "starter",
   });
 };
 
@@ -27,12 +27,12 @@ const login = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const payload = {
@@ -42,6 +42,10 @@ const login = async (req, res) => {
   await User.findByIdAndUpdate(user._id, {token})
   res.json({
     token,
+    user:{
+      email,
+      subscription: "starter"
+    }
   });
 };
 
@@ -57,9 +61,7 @@ const logout = async(req, res)=>{
   const {_id} = req.user;
   await User.findByIdAndUpdate(_id, {token: ""});
 
-  res.json({
-    message: "Logout success"
-  })
+  res.status(204).send();
 }
 
 module.exports = {

@@ -9,7 +9,7 @@ const {SECRET_KEY} = process.env;
 const { User } = require("../models/users");
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
   const result = await User.create({ ...req.body, password: hashPassword });
   if (!result) {
@@ -17,8 +17,10 @@ const register = async (req, res) => {
   }
 
   res.status(201).json({
-    email: result.email,
-    subscription: "starter",
+    user: {
+      email: result.email,
+      subscription: "starter",
+    }
   });
 };
 

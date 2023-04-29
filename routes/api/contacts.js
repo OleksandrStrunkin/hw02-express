@@ -1,19 +1,20 @@
 const express = require("express");
 const ctrl = require('../../controllers/contacts-controllers')
 const router = express.Router();
-const { validateBody, validateUpdateBody, validateUpdateFavoriteBody } = require('../../utils/validateBody');
+const { validateContactBody, validateUpdateBody, validateUpdateFavoriteBody } = require('../../utils/validateBody');
+const authenticate = require("../../utils/authenticate");
 
 
-router.get("/", ctrl.getAllContacts);
+router.get("/", authenticate, ctrl.getAllContacts);
 
-router.get("/:id", ctrl.getIdContact);
+router.get("/:id", authenticate, ctrl.getIdContact);
 
-router.post("/", validateBody, ctrl.addContact);
+router.post("/", authenticate, validateContactBody, ctrl.addContact);
 
-router.delete("/:id", ctrl.deleteContact);
+router.delete("/:id", authenticate, ctrl.deleteContact);
 
-router.put("/:id", validateUpdateBody, ctrl.updateContact);
+router.put("/:id", authenticate, validateUpdateBody, ctrl.updateContact);
 
-router.patch("/:id/favorite", validateUpdateFavoriteBody, ctrl.updateStatusContact);
+router.patch("/:id/favorite", authenticate, validateUpdateFavoriteBody, ctrl.updateStatusContact);
 
 module.exports = router;

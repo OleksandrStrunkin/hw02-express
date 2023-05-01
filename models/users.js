@@ -20,6 +20,9 @@ const usersSchema = new Schema({
       type: String,
       default: ""
     },
+    avatarUrl: {
+      type: String,
+    },
   }, {versionKey: false});
 
 const registerSchema = Joi.object({

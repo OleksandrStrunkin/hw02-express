@@ -6,12 +6,23 @@ require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const {SECRET_KEY} = process.env;
 
+const jimp = require("jimp")
+
+const path = require("path")
+const fs = require("fs/promises");
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+
+const gravatar = require("gravatar")
+
 const { User } = require("../models/users");
 
 const register = async (req, res) => {
-  const { password } = req.body;
+  const {email, password } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
-  const result = await User.create({ ...req.body, password: hashPassword });
+
+  const avatarUrl = gravatar.url(email);
+
+  const result = await User.create({ ...req.body, password: hashPassword, avatarUrl });
   if (!result) {
     throw HttpError(404, `Contact with not found`);
   }
@@ -31,6 +42,7 @@ const login = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }
+  
 
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
@@ -66,9 +78,36 @@ const logout = async(req, res)=>{
   res.status(204).send();
 }
 
+const updateAvatar = async(req, res)=>{
+  const {_id} = req.user;
+  const {path: tempUpload, filename} = req.file;
+
+  const avatarName = `${_id}_${filename}`
+  
+  jimp.read(tempUpload)
+  .then(image => {
+    return image.resize(250, 250)
+  })
+  .then(image => {
+    return image.write(result)
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
+  const result = path.join(avatarsDir, avatarName);
+
+  await fs.rename(tempUpload, result);
+  const avatarUrl = path.join("avatar", avatarName);
+  await User.findByIdAndUpdate(_id, {avatarUrl})
+
+  res.json({avatarUrl})
+}
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
-  logout: ctrlWrapper(logout)
+  logout: ctrlWrapper(logout),
+  updateAvatar: ctrlWrapper(updateAvatar)
 };

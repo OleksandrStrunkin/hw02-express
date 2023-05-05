@@ -1,6 +1,6 @@
 const  HttpError  = require("../helpers/HttpError");
 const {updateSchema, updateFavoriteSchema, addSchema} = require("../models/contactsM")
-const {registerSchema, loginSchema} = require("../models/users")
+const {registerSchema, loginSchema, emailSchema} = require("../models/users")
 
 const validateContactBody = (req, res, next) => {
   const requiredFields = ["name", "email", "phone"];
@@ -70,6 +70,14 @@ const validateLoginBody = (req, res, next) => {
   next();
 };
 
+const validateEmail = (req, res, next) => {
+  const { error } = emailSchema.validate(req.body);
+  if (error) {
+    return next(HttpError(400, "missing required field email"));
+  }
+  next();
+};
+
 
 
 module.exports = {
@@ -77,6 +85,7 @@ module.exports = {
   validateUpdateBody,
   validateUpdateFavoriteBody,
   validateRegisterBody,
-  validateLoginBody
+  validateLoginBody,
+  validateEmail
 };
 
